@@ -1,0 +1,88 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[usenames]{color}
+\usepackage{graphicx} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage[spanish]{babel}
+\usepackage{amsthm}
+\renewcommand*{\proofname}{Demostración}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{teorema}[theorem]{Teorema}
+\newtheorem{corolario}[theorem]{Corolario}
+\newtheorem{lema}[theorem]{Lema}
+\newtheorem{prop}[theorem]{Proposición}
+\newtheorem{obs}[theorem]{Observación}
+\numberwithin{equation}{section}
+\newtheorem{defi}{Definición}[section]
+
+\title{Paro óptimo y soluciones de viscosidad}
+\author{Jonathan Naffrichoux}
+\date{Mayo 2024}
+
+\begin{document}
+\maketitle 
+La conexión entre problemas de paro óptimo y ecuaciones diferenciales parciales con frontera libre se ha explorado extensivamente en las últimas décadas. En el contexto de \cite{peskir2006optimal}, sea $(X_n)_{n\in\mathbb{N}}$ una cadena de Markov definida sobre un espacio filtrado $(\Omega,\mathcal{F},(\mathcal{F}_n)_{n\in \mathbb{N}},\mathbb{P}_x)$ y que toma valores en un conjunto numerable $E$.
+
+Sea $G : E \to \mathbb{R}$ una función medible que satisface 
+\begin{align}\label{G-esperanza}
+    \mathbb{E}_x\left[\sup_{0\leq n\leq N}|G(X_n)|\right] < \infty, \quad \forall x \in \mathbb{E},\: \forall N \in \mathbb{N}.
+\end{align}
+$G$ se conoce como la \emph{función de ganancia}. El \emph{problema de paro óptimo} (en horizonte finito) que se estudia en \cite{peskir2006optimal} es
+\begin{align}\label{paro-optimo}
+    V^N(x) = \sup_{0\leq \tau \leq N}\mathbb{E}_x\left[G(X_\tau)\right],
+\end{align}
+donde el supremo se toma sobre todos los tiempos de paro $\tau$ definidos con respecto a la filtración $(\mathcal{F}_n)_{n\in\mathbb{N}}$ y que toman valores entre $0$ y $N$. Resolver este probema involucra calcular el valor de $V^N(x)$ así como encontrar el tiempo de paro óptimo. La función $V^N(x)$ se conoce como la \emph{función de valor}. Denotando por $TF(x) = \mathbb{E}_x\left[F(X_1)\right]$ al operador de transición de $(X_n)$, la célebre recursión de Wald-Bellman proporciona un algoritmo para calcular la función de valor por medio de
+\begin{align}\label{wb}
+    V^n(x) = \max\{G(x), TV^{n-1}(x)\}, \quad x \in E.
+\end{align}
+
+Los autores relacionan este tipo de problemas de paro óptimo con ecuaciones integro-diferenciales del siguiente estilo
+\begin{align*}
+    &\frac{\partial V}{\partial t} + \mathbb{L}_XF = 0 \quad en \: C,\\
+    &V|_D = G|_D,\\
+    &\frac{\partial V}{\partial x}|_{\partial C} = \frac{\partial G}{\partial x}|_{\partial C}
+\end{align*}
+donde $\mathbb{L}_X$ es un operador integro-diferencial y la condición de frontera varía en función de $x \in E$.
+
+Entonces surge la pregunta: ¿Qué ocurre si la frontera móvil en cuestión es difícil de describir?  En dimensiones bajas no suele haber mucho problema, pero conforme aumenta dimensión, la tarea de parametrizar  superficies se puede complicar y más si estas superficies van cambiando con el tiempo. 
+
+Esta es la problemática que motiva el presente proyecto de investigación. Regresando al caso discreto, existe una reformulación de \eqref{wb} que se ve de la siguiente manera
+\begin{align}
+        V^n(x) = \max\{V^{n-1}(x), TV^{n-1}(x)\}, \quad x \in E, \: 0\leq n\leq N.
+    \end{align}
+Introduciendo la notación $\partial_nV^n(x) := V^{n+1}(x)-V^n(x)$, podemos reescribir
+\begin{align}\label{no-lineal}
+    \partial_nV^n(x) = \max\{0, TV^{n}(x)-V^{n}(x)\}.
+\end{align}
+En el contexto de \cite{lawler2010random}, el operador
+\begin{align*}
+   \mathcal{L}F(x) := TF(x)-F(x),
+\end{align*}
+es conocido como el \emph{laplaciano discreto}. Así que la recursión de Wald-Bellman se puede entender como
+\begin{align}
+    \partial_nV^n(x) = \max\{0, \mathcal{L}V^{n}(x)\}.
+\end{align}
+
+Esta expresión sugiere que para resolver el problema de paro 
+óptimo en el caso continuo, se puede resolver la ecuación
+\begin{align}\label{parabolic-non-linear}
+    &\frac{\partial V}{\partial t} = \max\{0,\Delta V\}, \quad en \quad  \mathbb{R}^+\times E,\\
+    &V(0,x) = G(x) \quad en \quad E.
+\end{align}
+De esta manera evitamos lidiar con condiciones de frontera libre y nos enfocamos exclusivamente en resolver EDPs parabólicas totalmente no lineales. 
+
+Un concepto que ha mostrado ser muy útil para resolver este tipo de ecuaciones es el de \emph{soluciones de viscosidad}, introducido por  Pierre-Louis Lions y Michael G. Crandall al inicio de los 1980s. Esta noción permite solucionar ecuaciones que en un sentido tradicional estarían mal planteadas (aceptan una infinidad de soluciones Lipschitz continuas), buscando algún criterio que permita seleccionar la solución que sea significativa en las aplicaciones (se dice que es \emph{entrópica}). La herramienta fundamental que se utiliza en este contexto son los principios del máximo, que sí se pueden extender más allá del laplaciano a operadores completamente no lineales. La solución que se selecciona es aquella que satisfaga alguna noción concordante de \emph{entropía}.  
+
+De hecho, ya se han estudiado ligas entre ecuaciones del tipo \eqref{parabolic-non-linear} y problemas de \emph{control óptimo}, como lo hace S. Peng en \cite{peng2010nonlinear}. Su estrategia es determinar estas soluciones como supremos de funcionales lineales, lo cual dio lugar al novedoso concepto de \emph{esperanzas no lineales}. Sin embargo, la conexión con problemas de \emph{paro óptimo} parece no haberse establecido hasta el momento. Recordemos que los problemas de paro óptimo como \eqref{paro-optimo} no sólo consisten en calcular el respectivo supremo, sino en encontrar el \emph{tiempo de paro óptimo} también, lo cual puede proporcionar fórmulas más explicitas para entender soluciones de ecuaciones como \eqref{parabolic-non-linear}.
+
+\bibliographystyle{alpha}
+ \bibliography{refs}
+
+\end{document}
