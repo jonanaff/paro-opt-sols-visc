@@ -74,13 +74,32 @@ Esta expresión sugiere que para resolver el problema de paro
 óptimo en el caso continuo, se puede resolver la ecuación
 \begin{align}\label{parabolic-non-linear}
     &\frac{\partial V}{\partial t} = \max\{0,\Delta V\}, \quad en \quad  \mathbb{R}^+\times E,\\
-    &V(0,x) = G(x) \quad en \quad E.
+    &V(0,x) = G(x) \quad en \quad E,
 \end{align}
+donde $E = \mathbb{R}^N$ en el contexto continuo.
 De esta manera evitamos lidiar con condiciones de frontera libre y nos enfocamos exclusivamente en resolver EDPs parabólicas totalmente no lineales. 
 
-Un concepto que ha mostrado ser muy útil para resolver este tipo de ecuaciones es el de \emph{soluciones de viscosidad}, introducido por  Pierre-Louis Lions y Michael G. Crandall al inicio de los 1980s. Esta noción permite solucionar ecuaciones que en un sentido tradicional estarían mal planteadas (aceptan una infinidad de soluciones Lipschitz continuas), buscando algún criterio que permita seleccionar la solución que sea significativa en las aplicaciones (se dice que es \emph{entrópica}). La herramienta fundamental que se utiliza en este contexto son los principios del máximo, que sí se pueden extender más allá del laplaciano a operadores completamente no lineales. La solución que se selecciona es aquella que satisfaga alguna noción concordante de \emph{entropía}.  
+Un concepto que ha mostrado ser muy útil para resolver este tipo de ecuaciones es el de \emph{soluciones de viscosidad}, introducido por  Pierre-Louis Lions y Michael G. Crandall al inicio de los 1980s. Esta noción permite solucionar ecuaciones que en un sentido tradicional estarían mal planteadas (aceptan una infinidad de soluciones Lipschitz continuas), buscando algún criterio que permita seleccionar una solución significativa para las aplicaciones (se dice que es \emph{entrópica}). La herramienta fundamental que se utiliza en este contexto son los principios del máximo, que sí se pueden extender más allá del laplaciano a operadores completamente no lineales. La solución que se selecciona es aquella que satisfaga alguna noción concordante de \emph{entropía}.  
 
-De hecho, ya se han estudiado ligas entre ecuaciones del tipo \eqref{parabolic-non-linear} y problemas de \emph{control óptimo}, como lo hace S. Peng en \cite{peng2010nonlinear}. Su estrategia es determinar estas soluciones como supremos de funcionales lineales, lo cual dio lugar al novedoso concepto de \emph{esperanzas no lineales}. Sin embargo, la conexión con problemas de \emph{paro óptimo} parece no haberse establecido hasta el momento. Recordemos que los problemas de paro óptimo como \eqref{paro-optimo} no sólo consisten en calcular el respectivo supremo, sino en encontrar el \emph{tiempo de paro óptimo} también, lo cual puede proporcionar fórmulas más explicitas para entender soluciones de ecuaciones como \eqref{parabolic-non-linear}.
+Para motivar la definición de solución de viscosidad, supongamos por el momento que $V$ es lo suficientemente regular y consideremos la función $F : \mathbb{S}(N) \to \mathbb{R}$ dada por $F(X) = \max\{0,Tr(X)\}$, donde $\mathbb{S}(N)$ denota el espacio de matrices simétricas de $N\times N$ con entradas reales y $Tr$ denota el operador traza.  Entonces podemos reescribir la ecuación \eqref{parabolic-non-linear} como $V_t = F(D^2V)$, donde $D^2V$ es la matriz hessiana de $V$. Es bien sabido que el operador traza es no decreciente, así que $F$ es no decreciente (donde una matriz se considera no negativa si es semi positiva definida). 
+
+Sea $\psi \in C^{1,2}((0,T)\times\mathbb{R}^N)$ alrededor de un punto $(t_0,x_0) \in (0,T)\times\mathbb{R}^N$ y supongamos que $V-\psi$ tiene un máximo local en $(t_0,x_0)$. Entonces es bien sabido que
+\begin{align*}
+    \partial_t(V-\psi)(t_0,x_0) &= 0, \quad \text{en } (0,T)\times\mathbb{R}^N \\
+    D(V-\psi)(x_0) &= 0, \quad \text{en }(0,T)\times\mathbb{R}^N \\\
+    D^2(V-\psi)(x_0) &\leq 0, \quad \text{en } \mathbb{S}(N).
+\end{align*}
+Suponiendo de antemano que $V$ es una solución de \eqref{parabolic-non-linear}, podemos hacer la siguiente observación
+\begin{align*}
+    0 = \partial_tV - F(D^2V) \geq \partial_t\psi - F(D^2\psi).
+\end{align*}
+Note que la desigualdad 
+\begin{align}\label{desigualdad}
+0 \geq \partial_t\psi - F(D^2\psi)
+\end{align}
+es independiente de $V$ y tiene sentido aún cuando $V$ no sea diferenciable. Si la desigualdad \eqref{desigualdad} se cumple para una función $\psi$ arbitraria que cumple las propiedades antes descritas, diremos que $V$ es una \emph{subsolución de viscosidad} de \eqref{parabolic-non-linear}. Análogamente se puede definir lo que es una \emph{supersolución de viscosidad} de \eqref{parabolic-non-linear}. Una \emph{solución de viscosidad} es una función que es tanto subsolución como supersolución. 
+
+De hecho, ya se han estudiado ligas entre ecuaciones del tipo \eqref{parabolic-non-linear} y problemas de \emph{control óptimo}, como lo hace S. Peng en \cite{peng2010nonlinear}. Su estrategia es determinar estas soluciones como supremos de funcionales lineales, lo cual da lugar al novedoso concepto de \emph{esperanzas no lineales}. Sin embargo, la conexión con problemas de \emph{paro óptimo} parece no haberse establecido hasta el momento. Recordemos que los problemas de paro óptimo como \eqref{paro-optimo} no sólo consisten en calcular el respectivo supremo, sino en encontrar el \emph{tiempo de paro óptimo} también, lo cual puede proporcionar fórmulas más explicitas para entender soluciones de  \eqref{parabolic-non-linear}.
 
 \bibliographystyle{alpha}
  \bibliography{refs}
