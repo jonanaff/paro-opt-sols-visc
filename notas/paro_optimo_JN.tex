@@ -1,0 +1,536 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage[usenames]{color}
+\usepackage{graphicx} 
+\usepackage{amsfonts}
+\usepackage{amsmath}
+\usepackage{mathabx}
+\usepackage{mathtools}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{hyperref}
+\usepackage[spanish]{babel}
+\usepackage{amsthm}
+\renewcommand*{\proofname}{Demostración}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{teorema}[theorem]{Teorema}
+\newtheorem{corolario}[theorem]{Corolario}
+\newtheorem{lema}[theorem]{Lema}
+\newtheorem{prop}[theorem]{Proposición}
+\newtheorem{obs}[theorem]{Observación}
+\numberwithin{equation}{section}
+\newtheorem{defi}{Definición}[section]
+
+\title{Paro óptimo y soluciones de viscosidad}
+
+
+\begin{document}
+
+\maketitle
+
+\section{Paro óptimo}
+
+
+
+
+Este capítulo está basado en \cite{peskir2006optimal}. Sea $(X_n)_{n\in\mathbb{N}}$ una cadena de Markov definida sobre un espacio filtrado $(\Omega,\mathcal{F},(\mathcal{F}_n)_{n\in \mathbb{N}},\mathbb{P}_x)$ y supongamos que toma valores en un conjunto numerable $E$. Por el momento trabajaremos con cadenas $(X_n)_{n\in\mathbb{N}}$ homogéneas en el tiempo. Sin pérdida de generalidad podemos suponer que $(\Omega,\mathcal{F}) = (E^\mathbb{N},\mathcal{B}^\mathbb{N})$ es el espacio canónico. En este caso podemos realizar la cadena de Markov como de $X_n(\omega_0,\omega_1,...) = \omega_n$, es decir, $X_n$ es la proyección de la $n$-ésima coordenada. Introduciendo el mapeo canónico $\theta_n : E^{\mathbb{N}}\to E^{\mathbb{N}}$, $\theta_n(\omega)(k) = \omega(n+k)$, tenemos que $X_n\circ\theta_k(\omega) = \omega_{n+k}$. También supondremos que $\mathcal{P}_x(X_0 = x) = 1$ y que el mapeo $x\mapsto \mathbb{P}_x(F)$ es medible para toda $F \in \mathcal{F}$.
+
+Sea $G : E \to \mathbb{R}$ una función medible que satisface 
+\begin{align}\label{G-esperanza}
+    \mathbb{E}_x\left[\sup_{0\leq n\leq N}|G(X_n)|\right] < \infty, \quad \forall x \in \mathbb{E},\: \forall N \in \mathbb{N}.
+\end{align}
+$G$ se conoce como la \emph{función de ganancia}. El \emph{problema de paro óptimo} que nos interesa es el siguiente
+\begin{align}\label{paro-optimo}
+    V^N(x) = \sup_{0\leq \tau \leq N}\mathbb{E}_x\left[G(X_\tau)\right],
+\end{align}
+donde el supremo se toma sobre todos los tiempos de paro $\tau$ definidos con respecto a la filtración $(\mathcal{F}_n)_{n\in\mathbb{N}}$ y que toman valores entre $0$ y $N$. Resolver este probema involucra calular el valor de $V^N(x)$ así como encontrar el tiempo de paro óptimo.
+
+\subsection{Estrategia óptima}
+
+Escribiendo $G_n := G(X_n)$ obtenemos un proceso que describe la ganancia obtenida al parar el proceso en el momento $n$, de modo que el problema de paro óptimo consiste en maximizar el valor esperado de dicha ganancia. Para calcular $V^N(x)$ explícitamente desarrollamos una estrategia basada en la propiedad de supermartingala. Sean $0\leq n \leq N$ y definamos
+\begin{align}
+S_n^N &= G_n, \quad \text{si } n=N,\\
+S_n^N &= \max\{G_n, \mathbb{E}\left[S^{N}_{n+1}|\mathcal{F}_n\right]\},\quad \text{si } n = N-1,...,0.
+\end{align}
+
+
+También consideramos el tiempo de paro $\tau_n^N = \inf\{n\leq k \leq N : S_k^N = G_k\}$ y los conjuntos
+\begin{align}
+    C_n &= \{x \in E : V^{N-n}(x) > G(x)\},\\
+    D_n &= \{x \in E : V^{N-n}(x) = G(x)\}.
+\end{align}
+$C_n$ se conoce como la región de continuación debido a que, si nos encontramos en ella, entonces aun no hemos maximizado el valor de $G$ y entonces debemos seguir con nuestra estrategia. 
+
+Introducimos el operador de transición de $X$ dado por $TF(x) = \mathbb{E}_xF(X_1)$, $x \in E$, para una función $F : E \to \mathbb{R}$ medible y tal que $F(X_1)$ sea integrable con respecto a $\mathbb{P}_x$.
+
+Para entender mejor porqué $S_n^N$ se puede considerar como una estrategia óptima probamos el siguiente lema.
+
+\begin{lema}\label{lema1}
+    Para todo tiempo de paro $\tau$ adaptado a la filtración $(\mathcal{F}_n)$ y tal que $0\leq \tau \leq N$ tenemos
+    \begin{align}\label{desigualdad-estrategia}
+        S_n^N \geq \mathbb{E}\left[G_\tau|\mathcal{F}_n\right].
+    \end{align}
+    Además, el tiempo de paro $\tau_n^N$ cumple
+    \begin{align}\label{igualdad-estrategia}
+        S_n^N = \mathbb{E}\left[G_{\tau_n^N}|\mathcal{F}_n\right].
+    \end{align}
+    
+\begin{proof}
+    Comenzaremos probando \eqref{desigualdad-estrategia} por inducción hacia atrás. El resultado es trivial para $n = N$, pues $S_N^N = G_N = \mathbb{E}\left[G_N | \mathcal{F}_N\right]$, así que supongámoslo cierto para $n = N,N-1,...,k$, $k\geq 1$, y probémoslo para $n = k-1$.
+
+    Sea $\tau$ un tiempo de paro entre $k-1$ y $N$ y definamos $\overline{\tau} = \tau \lor k$, de modo que $\overline{\tau}$ es un tiempo de paro entre $k\leq \overline{\tau}\leq N$. Entonces
+    \begin{align*}
+        \mathbb{E}\left[G_\tau | \mathcal{F}_{k-1}\right] &= \mathbb{E}\left[1_{\tau = k-1}G_{k-1} + 1_{\tau\geq k}G_{\overline{\tau}} | \mathcal{F}_{k-1} \right]\\
+        &= 1_{\tau = k-1}\mathbb{E}\left[G_{k-1} | \mathcal{F}_{k-1}\right] + 1_{\tau\geq k}\mathbb{E}\left[G_{\overline{\tau}} | \mathcal{F}_{k-1} \right]\\
+        &= 1_{\tau = k-1}G_{k-1} + 1_{\tau\geq k}\mathbb{E}\left[\mathbb{E}\left[G_{\overline{\tau}} | \mathcal{F}_{k} \right] | \mathcal{F}_{k-1}  \right].
+    \end{align*}
+    Por hipótesis  de inducción $\mathbb{E}(G_{\overline{\tau}} | \mathcal{F}_k) \leq S^N_{k}$, y
+    concluimos
+    \begin{align*}
+        \mathbb{E}\left[G_\tau | \mathcal{F}_{k-1}\right] &\leq 1_{\tau = k-1}G_{k-1} + 1_{\tau\geq k}\mathbb{E}\left[S_k^N | \mathcal{F}_{k-1} \right] 
+        \leq S_{k-1}^N.
+    \end{align*}
+
+Para probar \eqref{igualdad-estrategia} notamos que $G_{k-1} = S^N_{k-1}$ en $\{\tau^N_{k-1} = k-1\}$ y $\mathbb{E}\left[S_k^N | \mathcal{F}_{k-1}\right] = S^N_{k-1}$ en $\{\tau^N_{k-1} \geq k\}$, lo cual se debe a  $\{\tau_{k-1}^N \geq k\} = \{S_{k-1}^N \not = G_{k-1} \}$
+
+Finalmente podemos rescatar las igualdades deducidas en la prueba de \eqref{desigualdad-estrategia} con $\tau = \tau_n^N$ para concluir
+\begin{align*}
+    \mathbb{E}\left[G_{\tau_n^N} | \mathcal{F}_{k-1}\right] &= 1_{\tau_n^N = k-1}G_{k-1} + 1_{\tau\geq k}\mathbb{E}\left[\mathbb{E}\left[G_{\tau_n^N} | \mathcal{F}_{k} \right] | \mathcal{F}_{k-1}  \right]\\
+    &= 1_{\tau_n^N = k-1}G_{k-1} + 1_{\tau_n^N\geq k}\mathbb{E}\left[S^N_{k-1} | \mathcal{F}_{k-1}  \right] = S_{k-1}^N.
+\end{align*}
+
+
+\end{proof}
+
+\end{lema}
+
+
+\subsection{Fórmula de Wald-Bellman}
+
+ Consideremos los conjuntos
+\begin{align}
+    C_n &= \{x \in E : V^{N-n}(x) > G(x)\},\\
+    D_n &= \{x \in E : V^{N-n}(x) = G(x)\}.
+\end{align}
+$C_n$ se conoce como la región de continuación debido a que, si nos encontramos en ella, entonces aun no hemos maximizado el valor de $G$ y debemos seguir con la estrategia. Mientras que si nos encontramos en $D_n$, ya obtuvimos el mayor resultado posible y ya no tiene sentido continuar.  Denotemos 
+\begin{align*}
+\tau_D = \inf\{0\leq n \leq N : X_n \in D_n\}.
+\end{align*}
+
+
+Ya estamos en posición de probar la fórmula de Wald-Bellman.
+
+\begin{teorema}
+    Supongamos que se cumple la estimación \eqref{G-esperanza} y que $V^n : E \to \mathbb{R}$ está dada por $V^n(x) = \sup_{0\leq \tau \leq n}\mathbb{E}_x\left[G(X_\tau)\right]$. Entonces $V^n$ satisface la ecuación de Wald-Bellman 
+    \begin{align}\label{W-B}
+        V^n(x) = \max\{G(x), TV^{n-1}(x)\}, \quad x \in E,
+    \end{align}
+    para $n=1,...,N$ y $V^0 = G$. Más aún,
+\begin{enumerate}[(i)]
+    \item El tiempo de paro $\tau_D$ es óptimo para \eqref{paro-optimo}, es decir, $\mathbb{E}_x\left[G_{\tau_D}\right] = V^n(x)$.
+    \item Si $\tau_{*}$ es un tiempo de paro óptimo entoncees $\tau_D \leq \tau_{*} \quad \mathbb{P}_x-$c.s.
+    \item $(V^{N-n}(X_n))_{0\leq n\leq N}$ es la supermartingala más pequeña que domina a $(G(X_n))_{0\leq n \leq N}$ bajo $\mathbb{P}_x$ para $x\in E$ fija.
+    \item El proceso detenido $(V^{(N-n)\land \tau_D}(X_{n\land \tau_D}))_{0\leq n \leq N}$ es una martingala bajo $\mathbb{P}_x$ para toda $x \in E$.
+\end{enumerate}
+
+\begin{proof}
+    Por la propiedad de Markov fuerte, $S^{N-n}_k \circ \Theta_n = S^N_{n+k}$  para $0\leq k \leq N-n$, y se sigue
+    \begin{align*}
+        \tau^{N-n}_0\circ\Theta_n &= \inf\{0\leq k \leq N-n : S^{N-n}_k\circ\Theta_n = G(X_k)\circ \Theta_n\}\\
+        &= \inf\{k : 0\leq k \leq N-n, \: S^{N-n}_{k+n} = G(X_{k+n})\}\\
+        &= \inf\{k : n\leq k' \leq N, \: S^{N-n}_{k'} = G(X_{k'})\} - n.
+    \end{align*}
+    Luego $\tau_n^N = \tau^{N-n}_0\circ\Theta_n + n$.
+    Del Lema \ref{lema1} tenemos $S_n^N = \mathbb{E}_x\left[G(X_{\tau_n^N}) | \mathcal{F}_n\right]$, y por aplicando la propiedad de Markov fuerte
+    \begin{align*}
+        S_n^N = \mathbb{E}_x\left[G(X_{n+\tau_0^{N-n}\circ\Theta_n}) | \mathcal{F}_n\right] = \mathbb{E}_x\left[G(X_{\tau_0^{N-n}})\circ\Theta_n | \mathcal{F}_n\right] = \mathbb{E}_{X_n}\left[G(X_{\tau_0^{N-n}})\right].
+    \end{align*}
+    En  \eqref{desigualdad-estrategia} probamos $\mathbb{E}_x\left[G_{\tau_0^{N-n}} \right] = S_0^{N-n} \geq \mathbb{E}_x\left[G_\tau \right]$ para todo tiempo de paro $\tau_0^{N-n}$ entre $0$ y $N-n$, y por lo tanto
+    \begin{align}\label{igualdad-clave}
+        S_n^N = \mathbb{E}_{X_n}\left[G_{\tau_0^{N-n}}\right] = V^{N-n}(X_n).
+    \end{align}
+
+    Combinando esto con la definción de $S_n^N = \max\{G(X_n),\mathbb{E}_x\left[S_{n+1}^N | \mathcal{F}_n\right]\}$, obtenemos 
+    \begin{align*}
+    V^{N-n}(X_n) = \max\{G(X_n),\mathbb{E}_x\left[V^{N-n-1}(X_{n+1})\circ \Theta_n | \mathcal{F}_n\right]\}, \quad 0\leq n\leq N-1,
+    \end{align*}
+    y aplicando nuevamente la propiedad de Markov
+    \begin{align*}
+        \mathbb{E}_x\left[V^{N-n-1}(X_{n+1}) | \mathcal{F}_n\right] &= \mathbb{E}_x\left[V^{N-n-1}(X_{1})\circ\Theta_n | \mathcal{F}_n\right] \\
+        &= \mathbb{E}_{X_n}\left[V^{N-n-1}(X_1)\right]\\
+        &= TV^{N-n-1}(X_n).
+    \end{align*}
+Concluimos 
+\begin{align*}
+    V^{N-n}(X_n) = \max\{G(X_n),TV^{N-n-1}(X_n)\}, \quad 0\leq n \leq N,
+\end{align*}
+y como $X_0 = x$ bajo $\mathbb{P}_x$, la fórmula de Wald-Bellman \eqref{W-B} se sigue tomando $n=0$,
+\begin{align*}
+    V^{N}(x) = \max\{G(x),TV^{N-1}(x)\}.
+\end{align*}
+
+\begin{enumerate}[(i)]
+    \item El hecho de que $\tau_D$ es óptimo se sigue de $\tau_D = \tau_0^N$  y  \eqref{igualdad-clave}  cuando $n=0$, lo cual implica
+    \begin{align*}
+        V^N(x) = S_0^N = \mathbb{E}_x\left[G(X_{\tau_0^N})\right] = \mathbb{E}_x\left[G(X_{\tau_D})\right].
+    \end{align*}
+
+    \item Si $\tau$ es otro tiempo de paro óptimo entonces $S_{\tau_*}^N = G_{\tau_*}$. En efecto, por definición $S^N_k \geq G_k$, $0\leq k\leq N$, así que $S^N_{\tau_*}\geq G_{\tau_*}$. Si $\mathbb{P}(S^N_{\tau_*}>G_{\tau_*})>0$, entonces $\mathbb{E}_x(G_{\tau_*})<\mathbb{E}_x(S^N_{\tau_*})$. Por el teorema de muestreo opcional y la propiedad de supermartingala de $(S^N_k)_{n\leq k\leq N}$  que se probará en el siguiente inciso, $ \mathbb{E}_x\left[S^N_{\tau_*}\right] \leq \mathbb{E}_x\left[S^N_0\right] = V^N(x)$. Es decir, $\mathbb{E}_x(G_{\tau_*})< V^N(x)$, contradiciendo la maximalidad de $\tau_*$. Llegamos a $S^N_{\tau_*}=G_{\tau_*}$, y dado que 
+    \begin{align*}
+    \tau_D = \tau_0^N= \inf\{0\leq n \leq N : S_n^N = G(X_n)\}, 
+    \end{align*}
+    concluimos $\tau_D \leq \tau_*$.
+    
+    \item Por definición $S_K^N \geq \mathbb{E}_x\left[S^N_{k+1} | \mathcal{F}_k\right]$ y $S^N_k \geq G_k$ para toda $0\leq k \leq N$, así que $(S^N_k)_{0\leq k \leq N}$ es una supermartingala que domina a $(G_k)_{0\leq k \leq N}$.
+
+    Si $(\tilde{S}_k)_{0\leq k \leq N}$ es otra supermartingala que domina a $(G_k)_{0\leq k \leq N}$,  entonces podemos probar por inducción que $\tilde{S}_k \geq S_k^N /: \mathbb{P}_x-$c.s.
+
+    Si $k=N$, inmediatamente se sigue $S^N_N = G_N \leq \tilde{S}_N$. Supongamos $\tilde{S}_k\geq S^N_k$ para toda $k$ en el rango $l\leq k \leq N$, con $l\geq 1$, lo cual implica que $\mathbb{E}_x\left[S^N_l | \mathcal{F}_{l-1}\right] \leq \mathbb{E}_x\left[\tilde{S}_l | \mathcal{F}_{l-1}\right]$, se sigue
+    \begin{align*}
+        S^N_{l-1}\leq \max\{G_{l-1}, \mathbb{E}_x\left[\tilde{S}_l | \mathcal{F}_{l-1}\right]\} \leq \tilde{S}_{l-1}.
+    \end{align*}
+
+    \item Para probar que $(V^{(N-k)\land \tau_D}(X_{k\land})_{0\leq k \leq N}$ es una martingala bajo $\mathbb{P}_x$ usaremos que $V^{N-k\land \tau_D}(X_{k\land \tau_D}) = S^{N}_{k\land \tau_D}$ y $\tau_D = \tau_0^N$. Ahora calculemos
+    \begin{align*}
+        \mathbb{E}\left[S^N_{(k+1)\land \tau_0^N} | \mathcal{F}_k\right] &= \mathbb{E}_x(1_{\tau_0^N\leq k}S^N_{k\land \tau_0^N} | \mathcal{F}_k) + \mathbb{E}_x\left[1_{\tau_0^N\geq k+1}S^N_{k+1} | \mathcal{F}_k\right]\\
+        &= 1_{\tau_0^N\leq k}S^N_{k\land \tau_0^N} + 1_{\tau_0^N\geq S^N_k} = S^N_{k\land \tau_0^N},
+    \end{align*}
+    dado que $D_k^N = \mathbb{E}_x\left[S^N_{k+1} | \mathcal{F}_k\right]$ en $\{\tau_0^N \geq k+1\}$ y $\{\tau_0^N \geq k+1\} \in \mathcal{F}_t$.
+\end{enumerate}
+
+\end{proof}
+
+\end{teorema}
+
+Una manera de calcular la recursión de Wald-Bellman es por medio del operador de transición no lineal $QF(x) = \max\{G(x),TF(x)\}$, siempre que $F : E\to \mathbb{R}$ sea medible y $F(X_1)$ integrable con respecto a $\mathbb{P}_x$ para toda $x \in E$. Luego
+\begin{align*}
+    V^n(x) = \max\{G(x),TV^{n-1}(x)\} = QV^{n-1},
+\end{align*}
+y tomando en cuenta $V^0 = G$ es fácil deducir $V^n(x) = Q^nG$.
+
+En el siguiente teorema probamos otra versión de la recurrencia de Wald-Bellman que será de utilidad.
+
+\begin{teorema}\label{camargo}
+    Para $N\in \mathbb{N}$ y $1\leq n\leq N$, la función de valor $V^n$ dada por \eqref{paro-optimo} satisface
+    \begin{align}
+        V^n(x) = \max\{V^{n-1}(x), TV^{n-1}(x)\}.
+    \end{align}
+
+    \begin{proof}
+        En primer lugar notemos que para cada $x \in E$ la sucesión $(V^n(x))_{0\leq n\leq N}$ es no decreciente, pues
+        \begin{align}
+            V^n(x) = \sup_{0\leq \tau\leq n}\mathbb{E}_x\left[G(X_\tau)\right] \geq \sup_{0\leq \tau \leq m}\mathbb{E}_x\left[G(X_\tau)\right] = V^m(x), \quad \forall 0\leq m \leq n.
+        \end{align}
+
+        En particular, si $m=n-1$, entonces $V^n(x)\geq V^{n-1}(x)$. Por Wald-Bellman se sigue $V^n(x) = \max\{G(x),TV^{n-1}(x)\} \geq TV^{n-1}(x)$, así que
+        \begin{align*}
+        V^n(x) \geq \max\{V^{n-1}(x),TV^{n-1}(x)\}.
+        \end{align*}
+        Como $V^0(x) = G(x)$, de Wald-Bellman también se sigue $V^{n-1}(x)\geq G(x)$ para $1\leq n \leq N$, y por tanto 
+        \begin{align*}
+        \max\{G(x),TV^{n-1}(x)\}\leq \max\{V^{n-1}(x),TV^{n-1}(x)\}.
+        \end{align*}
+        Concluimos $V^n(x) = \max\{V^{n-1}(x),TV^{n-1}(x)\}$, $1\leq n \leq N$.
+    \end{proof}
+\end{teorema}
+
+\subsection{Caso finito}
+
+Si $|E|< \infty$ entonces podemos describir la dinámica de $(X_n)_{n\geq 0}$ por medio de una matriz de transición $P\in \mathbb{R}^{N\times N}$, $(P)_{i,j} = (p_{ij})$. Sin pérdida de generalidad supongamos $E = \{1,2,...,N\}$. Entonces podemos calcular explícitamente el operador de transición
+\begin{align*}
+    TF(x) = \mathbb{E}_x\left[F(X_1)\right] = \Sigma_{k \in E}F(k)\mathbb{P}_x(X_1 = k) = \Sigma_{k \in E}F(k)p_{xk}.
+\end{align*}
+Es decir, $TF(x)$ es la $x$-ésima componente de $P\cdot \overline{F}$, donde $\overline{F} = (F(1),...,F(N)) \in \mathbb{R}^N$.
+
+Es interesante preguntarse qué ocurre si manipulamos la cadena de Markov en función de algún tiempo aleatorio. Por ejemplo, podríamos matar la cadena con base a un tiempo geométrico. Esto lo realizamos considerando $q \in (0,1)$ y una sucesión $T_1,T_2,...$ de variables aleatorias i.i.d. con distribución uniforme en $(0,1)$. Añadimos el estado $\dag$ cementerio e introducimos el proceso $(\widehat{X}_k)_{k \in \mathbb{N}}$ que toma valores de estados $\widehat{E} = \{0,1,...\}$ y está definido de la siguiente manera
+\begin{align*}
+    \widehat{X}_k = \left\{\begin{array}{ccc}
+      X_k   &  \text{si } & T_i<q \quad \forall i \in \{0,1,...,k\} \\
+       0  &  \text{si } & \max\{T_1,...,T_k\} \geq q
+    \end{array}\right.
+\end{align*}
+
+Entonces podemos calcular explícitamente la matriz de transición $\widehat{P} \in \mathbb{R}^{(N+1)\times(N+1)}$ del proceso matado.
+
+Si partimos del estado $i = 0$ entonces es imposible salir y por tanto 
+\begin{align*}
+\widehat{p}_{o,j} = \mathbb{P}(\widehat{X}_1 | \widehat{X}_0 = 0) = 1, \text{si }j=0 \quad \widehat{p}_{o,j} = 0 \text{   si j = 0 y será igual a 0 si $j>0$}.
+\end{align*}
+
+Si $i>0$ y $j = 0$, entonces desde el inicio ocurrió un fracaso y 
+\begin{align*}
+\widehat{p}_{i,0} =  \mathbb{P}(\widehat{X}_1 = j| \widehat{X}_0 = 0) = \mathbb{P}(T_1\geq q) = 1-q.
+\end{align*}
+
+Finalmente, $i>1, j>1$ nos indica que la cadena sigue su curso usual y desde el inicio se consiguió un éxito, por lo que
+\begin{align*}
+    \mathbb{P}(\widehat{X}_1 = j | \widehat{X}_0 = i) &= \mathbb{P}(X_1 = j, T_1<q | X_0 = i)\\ &= \mathbb{P}(X_1 = j | X_0 = i) \mathbb{P}(T_1<q)  = p_{i,j}q.
+\end{align*}
+
+Claramente $\widehat{P}$ es una matriz estocástica, pues $\widehat{p}_{0,0} = 1$, $\widehat{p}_{0,j} = 0$ para $j>0$ y 
+\begin{align*}
+    \Sigma_{j}\widehat{p}_{i,j} = 1-q + q\Sigma_jp_{i,j} = 1, \quad \text{ cuando } i>0.
+\end{align*}
+Experimentalmente comprobamos algo curioso: la región congelada tiende a crecer en el caso matado.
+
+ 
+\section{Ecuaciones parabólicas}
+
+
+Desde un punto de vista probabilístico, el primer acercamiento que se suele tener a las ecuaciones parabólicas es cuando se estudia el problema de la ruina del jugador. Sean $N>0$ y $E = \{0,1,2,...,N\}$. Consideremos una caminata aleatoria simple y simétrica $S_n$ sobre $E$. Denotando $T = \min\{n : S_n = 0 \: \lor S_n = N \}$, es bien sabido que $F : E \to \mathbb{R}$ dada por 
+\begin{align*}
+    F(x) := \mathbb{P}\left[S_T = N | S_0 = x\right],
+\end{align*}
+satisface $F(0) = 0$, $F(N) = 1$ y
+\begin{align}\label{promedio-1d}
+    F(x) = \frac{1}{2}F(x+1)+\frac{1}{2}F(x-1), \quad x=1,...,N-1.
+\end{align}
+Forzosamente $F(x) = x/N$.
+
+
+En general, si $a,b \in \mathbb{R}$, entonces la única función $F : E \to \mathbb{R}$ que satisface \eqref{promedio-1d} con $F(0) = a$ y $F(N) = b$ es la función lineal
+\begin{align*}
+    F(x) = a + \frac{x(b-a)}{N}.
+\end{align*}
+
+Este resultado se puede extender a una caminada aleatoria en $\mathbb{Z}^d$, con $d$ un entero positivo. Supongamos ahora que $F : \mathbb{Z}^d \to \mathbb{R}$ es una función genérica. De manera análoga al caso finito del Capítulo 1, podemos calcular explícitamente
+\begin{align*}
+    \mathbb{E}_x\left[F(S_1)\right] = \Sigma_{y \in \mathbb{Z}^d}F(y)\mathbb{P}_x(S_1 = y).
+\end{align*}
+Pero si la caminata aleatoria es simétrica, es decir, la probabilidad de llegar a cualquier estado aledaño es la misma, entonces $\mathbb{P}_x(S_1 = y) = \frac{1}{2d}$ si $|x-y| = 1$ y es cero en otro caso. Entonces el operador de transición toma la forma
+\begin{align*}
+    TF(x) := \mathbb{E}_x\left[F(S_1)\right] = \frac{1}{2d}\sum_{y \in \mathbb{Z}^d, |x-y| = 1}F(y).
+\end{align*}
+Un operador asociado a $T$ que es de gran importancia es 
+\begin{align}
+    \mathcal{L}F(x) = (T-I)F(x) = \frac{1}{2d}\sum_{y \in \mathbb{Z}^d, |x-y|=1}(F(y)-F(x)),
+\end{align}
+también conocido como el \emph{laplaciano discreto}. Note que podemos escribir 
+\begin{align}
+    \mathcal{L}F(x) = \mathbb{E}_x\left[F(S_1)\right] - F(x) =  \mathbb{E}_x\left[F(S_1)-F(S_0)\right].
+\end{align}
+
+
+\subsection{Problema de Dirichlet para funciones armónicas}
+
+Para un conjunto $A \subset \mathbb{Z}^d$ definimos su frontera exterior como
+\begin{align*}
+    \partial A = \{z \in \mathbb{Z}^d \backslash A : \text{dist}(z,A) = 1\},
+\end{align*}
+y su cerradura como  $\overline{A} := A\cup \partial  A$.
+
+ Dada una función $F : \partial A \to \mathbb{R}$, el problema de Dirichlet para funciones armónicas consiste en encontrar una extensión $F : \overline{A} \to \mathbb{R}$ de $F$ tal que
+\begin{align}\label{discrete-laplace}
+    \mathcal{L}F(x) = 0, \quad \: x \in A.
+\end{align}
+El problema \eqref{discrete-laplace} también se conoce como la \emph{ecuación de Laplace} y cualquier función $F$ que lo satisfaga 
+como \emph{función armónica}. Para extender las técnicas utilizadas en el caso $d=1$ introducimos el tiempo markoviano 
+\begin{align*}
+T_A = \min\{n\geq 0 : S_n \not \in A\}.
+\end{align*}
+
+\begin{teorema}
+    Si $A \subset \mathbb{R}^d$ es finito, entonces para toda $F : \partial A \to \mathbb{R}$ la única extensión de $F$ a $\overline{A}$ que satisface \eqref{discrete-laplace} está dada por
+    \begin{align}\label{sol-laplace}
+        F(x) = \mathbb{E}\left[F(S_{T_A}) | S_0 = x\right] = \sum_{y \in \partial A}\mathbb{P}(S_{T_A}=y | S_0 = x)F(y).
+    \end{align}
+    \begin{proof}
+ 
+    Primero probemos que $F$ definida de esta manera satiface la ecuación de Laplace.
+    Sea $x \in A$, $y \in \partial A$ y notemos que
+    \begin{align*}
+        \mathbb{P}(S_{T_A}=y | S_0 = x) &= \sum_{|x-z|=1}\mathbb{P}(S_{T_A}=y, S_1 = z | S_0 = x)\\
+        &=  \sum_{|x-z|=1}\mathbb{P}(S_{T_A}=y | S_1 = z, S_0 = x)\mathbb{P}(S_1 = z | S_0 = x)    \\
+        &= \sum_{|x-z|=1}\frac{1}{2d}\mathbb{P}(S_{T_A}=y | S_1 = z).
+    \end{align*}
+    
+    Si $S_0 = x \in A$, entonces $T_A =\inf\{n\geq 1 : S_n \not \in A\}$. Como $T_A = \inf\{n\geq 0 : S_{n}\not \in A\}$, entonces $T_A+1 = \inf\{n\geq 1 : S_{n-1}\not \in A\} $, y por tanto $T_A\circ\Theta_1+1 = \inf\{n\geq 1 : S_{n}\not \in A\}= T_A$ bajo $S_0 = x \in A$. Por la propiedad de Markov fuerte se sigue
+    \begin{align*}
+         \mathbb{P}(S_{T_A}=y | S_1 = z) &= \mathbb{P}(S_{T_A\circ \Theta_1+1}=y | S_1 = z) \\
+         &= \mathbb{P}(S_{T_A}=y | S_0 = z).
+    \end{align*}
+    Luego
+    \begin{align*}
+         \mathbb{P}(S_{T_A}=y | S_0 = x) = \sum_{|x-z|=1}\frac{1}{2d}\mathbb{P}(S_{T_A}=y | S_0 = z).
+    \end{align*}
+    y concluimos que $F$ es armónica de la siguiente manera
+    \begin{align*}
+         \mathbb{E}\left[F(S_1) | S_0 = x\right] &= \frac{1}{2d}\sum_{|z-x|=1}F(z)\\
+         &= \frac{1}{2d}\sum_{|z-x|=1}\mathbb{E}\left[F(S_{T_A}) | S_0 = z\right]\\
+         &= \frac{1}{2d}\sum_{|z-x|=1}\sum_{y \in \partial A}\mathbb{P}(S_{T_A}=y | S_0 = z)F(y)   \\
+         &=\sum_{y \in \partial A}\mathbb{P}(S_{T_A}=y | S_0 = x)F(y) = F(x).
+    \end{align*}
+    
+    Para probar la unicidad supongamos que $G$ es una extensión armónica de $F$ en $A$ y definamos $M_n = G(S_{n \land T_A})$. Utilizando la  propiedad de Markov obtenemos
+    \begin{align*}
+        \mathbb{E}\left[G(S_{(n+1)\land T_A}) | S_0,...,S_n\right] &=\mathbb{E}\left[ 1_{T_A\leq n}G(S_{ T_A}) | S_0,...,S_n\right]+\mathbb{E}\left[1_{T_A> n}G(S_{n+1}) | S_0,...,S_n\right]\\
+        &= 1_{T_A\leq n}G(S_{T_A}) + 1_{T_A> n}\mathbb{E}_{S_n}\left[G(S_1)\right] \\
+        &= 1_{T_A\leq n}G(S_{T_A}) + 1_{T_A> n}G(S_n)
+        = G(S_{n\land T_A}),
+    \end{align*}
+    donde la última igualdad se debe a que $G$ es armónica.
+    Concluimos que $M_n$ es una martingala y por muestro opcional  $\mathbb{E}\left[M_n\right] = \mathbb{E}\left[M_0\right]$. Si $S_0 = x \in \overline{A}$, entonces
+    \begin{align*}
+        G(x) = \mathbb{E}\left[M_0\right] = \mathbb{E}\left[M_n\right] = \sum_{y \in \overline{A}}\mathbb{P}(S_{n\land T_A} = y)G(y).
+    \end{align*}
+
+    Como siempre es posible conectar dos puntos de $\overline{A}$ por medio de $S_n$, tenemos $T_A<\infty$ y tomando límite
+    \begin{align*}
+        G(x) = \lim_{n\to \infty}\sum_{y \in \overline{A}}\mathbb{P}(S_{n\land T_A} = y)G(y) = \sum_{y \in \delta A}\mathbb{P}(S_{T_A} = y)F(y),
+    \end{align*}
+    gracias a que $A$ es finito.
+    \end{proof}
+\end{teorema}
+
+Note que la condición de que $M_n$ sea una martingala es equivalente a que $F$ sea armónica.
+
+
+
+\subsection{Ecuación del calor}
+\subsubsection{Caso lineal}
+\textbf{Modelo de flujo de calor : } Sea $A \subset \mathbb{Z}^d$ un conjunto finito con frontera $\partial A$. Fijamos la temperatura de la frontera como cero en todo momento y denotamos la temperatura en $x \in A$ por $p_n(x)$. A cada tiempo $n$, el calor en $x$ se esparce uniformemente a los $2d$ vecinos más cercanos. Si uno de esos vecinos es un punto en la frontera, entonces el calor se pierde para siempre (se mata a la partícula que transporta el calor al llegar a la frontera). Es decir, la temperatura de $x \in A$ está dada por la cantidad de calor fluyendo desde las partículas vecinas,
+\begin{align*}
+    p_{n+1}(x) = \frac{1}{2d}\sum_{|x-y| = 1}p_n(y).
+\end{align*}
+Introduciendo la notación $\partial_n p_n = p_{n+1}(x) - p_n(x)$, obtenemos la \emph{ecuación del calor discreta}
+\begin{align}\label{ec-calor}
+    \partial_np_n(x) = \frac{1}{2d}\sum_{|x-y| = 1}p_n(y) - p_n(x) = \mathcal{L}p_n(x), \quad x \in A.
+\end{align}
+La temperatura inicial está dada por
+\begin{align}
+    p_0(x) = f(x), \quad x \in A.
+\end{align}
+La condición de frontera
+\begin{align}
+    p_n(x) = 0, \quad x \in \partial A.
+\end{align}
+
+Si la condición inicial es $f(x) = 1$ y $f(z) = 0$ para $z \not = x$ con $x \in A$, entonces
+\begin{align*}
+    p_n(y) = \mathbb{P}(S_{n\land T_A} = y | S_0 = x).
+\end{align*}
+Esto se sigue del truco de siempre,
+\begin{align*}
+    p_{n+1}(y) &= \sum_{|y-z|=1}\mathbb{P}(S_{(n+1)\land T_A} = y, S_{n\land T_A}=z | S_0 = x)\\
+    &= \frac{1}{2d}\sum_{|y-z|=1}\mathbb{P}(S_{n\land T_A}=y | S_0 = x).
+\end{align*}
+
+En realidad, si $f$ es cualquier función sobre $A$, entonces $\{p_n(x) : x \in A\}$ está dada por $T^nf$, donde $T$ es el operador de transición (lineal).
+
+\begin{obs}
+    Si $N = | A|$, podemos interpretar a una función $f : A \to \mathbb{R} $ como un vector en $\mathbb{R}^N$ y a $T$ como un operador lineal sobre $ \mathbb{R}^N$. De hecho, $T$ es un operador simétrico y por tanto posee una base ortogonal de vectores propios.
+\end{obs}
+
+El problema de calcular explícitamente $T^n$ es que puede ser costoso, así que  se opta por diagonalizar $T$. 
+
+Comencemos calculando $p_n$ para el caso $d=1$ y $A=\{1,...,N-1\}$. Primero buscamos soluciones de \eqref{ec-calor} de la siguiente forma
+\begin{align*}
+    p_n(x) = \lambda^n\phi(x).
+\end{align*}
+En este caso tenemos
+\begin{align*}
+    \mathcal{L}p_n(x) = \partial_np_n(x) = \lambda^{n+1}\phi(x) - \lambda^n\phi(x) = (\lambda-1)\lambda^n\phi(x).
+\end{align*}
+Como $p_0(x) = \phi(x)$ tenemos
+\begin{align*}
+   (T-I)\phi(x) = \mathcal{L}\phi(x) = \mathcal{L}p_0(x) = (\lambda - 1)\phi(x).
+\end{align*}
+Así que solucionar la ecuación del calor en este caso equivale a encontrar los valores propios y las funciones propias de $T$. Esto quiere decir encontrar $\lambda, \phi$ tales que
+\begin{align*}
+    T\phi(x) = \lambda\phi(x), \quad x \in \overline{A},
+\end{align*}
+con $\phi \equiv 0$ en $\partial A$ (condiciones de frontera de Dirichlet).
+
+En el caso unidimensional se pueden simplificar los cálculos para obtener las funciones propias. La regla del seno de una suma nos dice
+\begin{align*}
+    sin((x\pm 1)\theta) = sin(x\theta)cos(\theta) \pm cos(x\theta)sin(\theta).
+\end{align*}
+Por lo tanto, 
+\begin{align*}
+    \mathbb{E}_x\left[sin(\theta \cdot S_1) | S_0 = x\right] &= \frac{1}{2}(sin((x+1)\theta) + sin((x-1)\theta))\\
+    &= cos(\theta)sin(x\theta).
+\end{align*}
+En forma matricial tendríamos
+\begin{align*}
+    T\cdot(sin(\theta i))_{i\in\{1,...,N-1\}} = cos(\theta)(sin(\theta i))_{i\in\{1,...,N-1\}}.
+\end{align*}
+Escogiendo $\theta_j = \pi j/N$ para cada $j\in \{1,...,N-1\}$, obtenemos una función propia $\phi_j(x) = sin(\pi jx/N)$, que además satisface la condición de frontera $\phi_j(0) = \phi_j(N) = 0$ y tiene como valor propio a $cos(\frac{\pi j}{N})$. Dado que $T$ es simétrica y las $\phi_j$ son funciones propias asociadas a diferentes valores propios, conforman un sistema ortogonal en $\mathbb{R}^{N-1}$. Luego toda función $f : A \to \mathbb{R}$ tiene una descomposición única de la forma
+\begin{align}
+    f(x) = \sum_{j=1}^{N-1}c_jsin\left(\frac{\pi jx}{N}\right),
+\end{align}
+conocida como la \emph{serie de Fourier} finita. Entonces la solución de la ecuación del calor con condición inicial $f$ está dada por 
+\begin{align*}
+    p_n(y) = \sum_{j=1}^{N-1}c_j\left[cos\left(\frac{j\pi}{N}\right)\right]^n\phi_j(y).
+\end{align*}
+
+La ortoganilidad de los vectores propios nos da
+\begin{align}\label{orto-cero}
+    \sum_{x=1}^{N-1}sin\left(\frac{\pi j x}{N}\right)sin\left(\frac{\pi k x}{N}\right) = 0, \quad \text{si }
+j\not = k.
+\end{align}
+
+Además,
+\begin{align}\label{orto-seno}
+    \sum_{j=1}^{N-1}sin\left(\frac{\pi j x}{N}\right)^2 = \frac{N}{2}.
+\end{align}
+En efecto, denotando por $\zeta_1,...,\zeta_N$ a las $N$-ésimas raíces de la unidad ($\zeta_k^N = 1$, $k = 1,...,N$), entonces
+\begin{align*}
+    \zeta_k = cos\left(\frac{2k\pi}{N}\right)+isin\left(\frac{2k\pi}{N}\right), \quad k=1,...,N.
+\end{align*}
+Es bien sabido que 
+\begin{align*}
+    \zeta_1+\zeta_2+...+\zeta_N = 0,
+\end{align*}
+y como es una suma de números complejos,
+\begin{align*}
+     \sum_{x=1}^{N-1}cos\left(\frac{\pi j x}{N}\right) = \sum_{x=1}^{N-1}sin\left(\frac{\pi j x}{N}\right) = 0.
+\end{align*}
+Por la fórmula del seno del doble de un ángulo tenemos
+\begin{align*}
+    \sum_{j=1}^{N-1}sin^2\left(\frac{jx\pi}{N} \right) &= \sum_{j=0}^{N}sin^2\left(\frac{jx\pi}{N} \right) \\
+    &= \frac{1}{2}\sum_{j=0}^{N-1}\left[1-cos\left(\frac{2jx\pi}{N}\right)\right] \\
+    &= \frac{N}{2}-\frac{1}{2}\sum_{j=1}^Ncos\left(\frac{2jx\pi}{N}\right) = \frac{N}{2}.
+\end{align*}
+
+Si consideramos $f = \delta_x$ ($\delta_x(x) = 1$ y $\delta_x(y) = 0$ si $y \not = x$), entonces
+\begin{align*}
+    1 = f(x) =  \sum_{j=1}^{N-1}c_jsin\left(\frac{\pi jx}{N}\right),
+\end{align*}
+y de \eqref{orto-seno} se sigue
+\begin{align*}
+\sum_{j=1}^{N-1}sin^2\left(\frac{\pi j x}{N}\right) = \frac{N}{2}\sum_{j=1}^{N-1}c_jsin\left(\frac{\pi jx}{N}\right). 
+\end{align*}
+Para $y \not = x$, se sigue de \eqref{orto-cero}
+\begin{align*}
+    \sum_{j=1}^{N-1}sin\left(\frac{\pi jx}{N}\right) sin\left(\frac{\pi jy}{N}\right) = 0 = f(y) =  \sum_{j=1}^{N-1}c_jsin\left(\frac{\pi jy}{N}\right), \quad y \not = x.
+\end{align*}
+Como $\{\phi_j\}_{j=1}^{N-1}$ es una base de $\mathbb{R}^{N-1}$ tenemos necesariamente que
+\begin{align*}
+    c_j = \frac{2}{N}sin\left(\frac{\pi jx}{N}\right) = \frac{2}{N}\phi_j(x).
+\end{align*}
+Concluimos que la solución a la ecuación del calor con condición inicial $\delta_x$ está dada por
+\begin{align*}
+    \mathbb{P}\left(S_{n\land T_A} | S_0 = x\right) = \frac{2}{N}\sum_{j=1}^{N-1}\phi_j(x)\lambda_j^n\phi_j(y),
+\end{align*}
+donde
+\begin{align*}
+    cos\left(\frac{j\pi}{N}\right) = \lambda_j.
+\end{align*}
+
+\subsubsection{Caso no lineal}
+
+Bajo las mismas hipótesis del Capítulo 1 tenemos el operador de transición no lineal $Qf = \max\{f,Tf\}$ (o $Qf = \max\{G,Tf\}$). Gracias al Teorema \ref{camargo} tenemos la recursión 
+\begin{align}
+    \partial_nV^n(x) := V^{n+1}(x) - V^{n} &= \max\{0,TV^{n}(x) - V^{n}(x)\}\\ &= \max\{0,\mathcal{L}V^{n}(x)\}.
+\end{align}
+Ya comprobamos que $Q^nG = V^n$, con condición inicial $V^0 = G$ y condición de frontera libre.
+
+\bibliographystyle{alpha}
+ \bibliography{refs}
+
+\end{document}
+
+
+
+
